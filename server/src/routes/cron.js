@@ -11,11 +11,16 @@ function verifyCronSecret(req, res, next) {
   const configuredSecret = config.cronSecret;
 
   if (!configuredSecret) {
-    return res.status(500).json({ error: 'CRON_SECRET is not configured on server' });
+    return res.status(500).json({
+      error: 'CRON_SECRET is not configured on server'
+    });
   }
 
   const authHeader = req.headers.authorization || '';
-  const bearerToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
+  const bearerToken = authHeader.startsWith('Bearer ')
+    ? authHeader.slice(7).trim()
+    : null;
+
   const customHeader = req.headers['x-cron-secret'];
   const querySecret = req.query.secret;
 
@@ -34,24 +39,31 @@ function verifyCronSecret(req, res, next) {
  * POST /api/cron/scrape
  * Scheduled cron endpoint to scrape all active tracked products.
  * Requires CRON_SECRET.
+ *
+ * Responds immediately so external cron services do not
+ * timeout while Playwright processes the products.
  */
-router.post('/scrape', verifyCronSecret, async (req, res) => {
-  try {
-    console.log('[Cron API] Triggered scheduled batch scrape');
-    const summary = await trackerService.runScheduledCron();
+router.post('/scrape', verifyCronSecret, (req, res) => {
+  console.log('[Cron API] Triggered scheduled batch scrape');
 
-    res.json({
-      message: 'Scheduled batch scrape completed',
-      timestamp: new Date().toISOString(),
-      summary
+  trackerService.runScheduledCron()
+    .then((summary) => {
+      console.log(
+        `[Cron API] Background scrape completed. Success: ${summary.succeeded}, Failed: ${summary.failed}`
+      );
+    })
+    .catch((err) => {
+      console.error(
+        '[Cron API] Background scheduled scrape failed:',
+        err
+      );
     });
-  } catch (err) {
-    console.error('[Cron API] Scheduled scrape failed:', err);
-    res.status(500).json({
-      error: 'Scheduled batch scrape failed',
-      message: err.message
-    });
-  }
+
+  return res.status(202).json({
+    accepted: true,
+    message: 'Scheduled batch scrape started',
+    timestamp: new Date().toISOString()
+  });
 });
 
 module.exports = router;
