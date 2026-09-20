@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+.pnp
+.pnp.js
+
+# Production build artifacts
+dist/
+client/dist/
+build/
+
+# Environment files - NEVER commit secrets or credentials
+.env
+.env.*
+*.env
+client/.env
+client/.env.*
+server/.env
+server/.env.*
+
+# Allow tracking example environment templates
+!.env.example
+!client/.env.example
+!server/.env.example
+
+# Database local fallback data
+data/
+server/data/
+local_db.json
+server/data/local_db.json
+
+# Testing and coverage
+coverage/
+.nyc_output
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

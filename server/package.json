@@ -1,0 +1,21 @@
+{
+  "name": "ine-price-tracker-server",
+  "version": "1.0.0",
+  "description": "Backend API & Playwright Scraper for INE Product Price Tracker",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "node --test test/*.test.js",
+    "scrape:headed": "node src/scraper/headedScraper.js",
+    "scrape:test": "node src/scraper/headedScraper.js --dry-run"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "playwright": "^1.50.0"
+  }
+}
