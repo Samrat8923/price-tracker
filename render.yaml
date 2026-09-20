@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: ine-price-tracker-api
+    runtime: node
+    plan: starter
+    rootDir: server
+    buildCommand: npm install && npx playwright install --with-deps chromium
+    startCommand: node index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SCRAPER_HEADLESS
+        value: "true"
+      - key: SCRAPER_TIMEOUT_MS
+        value: "35000"
+      - key: SCRAPER_MAX_RETRIES
+        value: "3"
+      - key: STOREFRONT_BASE_URL
+        value: https://demo.inelabteamdev.com
+      - key: CRON_SECRET
+        generateValue: true
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
